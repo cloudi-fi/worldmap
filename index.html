@@ -52,6 +52,26 @@
       body.theme-light #theme-toggle { color: #8898C8; }
       body.theme-dark  #theme-toggle { color: #466cd6; }
 
+      .continents {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 16px;
+      }
+      .continents button {
+        padding: 5px 16px;
+        border-radius: 99px;
+        border: none;
+        font-size: 12px;
+        font-weight: 600;
+        letter-spacing: 0.04em;
+        cursor: pointer;
+        transition: background 0.2s, color 0.2s;
+      }
+      body.theme-light .continents button { background: #E4EAF8; color: #3F6ED2; }
+      body.theme-dark  .continents button { background: #1e3a7a; color: #7da4f5; }
+      body.theme-light .continents button:hover { background: #C2D0F0; }
+      body.theme-dark  .continents button:hover { background: #2546a6; color: #fff; }
+
       /* The globe container – the globe canvas will fill this */
       #globe {
         width: 1200px;
@@ -69,6 +89,14 @@
       <h1>WorldMap Globe — dev preview</h1>
       <button id="theme-toggle" type="button">Dark</button>
     </div>
+    <nav class="continents">
+      <button data-lat="29.727" data-lng="4.840"   data-alt="0.897">Europe</button>
+      <button data-lat="20.898" data-lng="-106.276" data-alt="1.166">North America</button>
+      <button data-lat="-33.929" data-lng="-68.950" data-alt="1.357">South America</button>
+      <button data-lat="-17.046" data-lng="17.292"  data-alt="1.254">Africa</button>
+      <button data-lat="-31.561" data-lng="140.528" data-alt="1.094">Oceania</button>
+      <button data-lat="11.562"  data-lng="94.406"  data-alt="1.038">Asia</button>
+    </nav>
     <div id="globe"></div>
 
     <script type="module">
@@ -103,6 +131,17 @@
           theme,
         });
       }
+
+      // ── Continent buttons ──────────────────────────────────────────────────
+      document.querySelector('.continents').addEventListener('click', e => {
+        const btn = e.target.closest('button[data-lat]');
+        if (!btn || !currentMap) return;
+        currentMap.flyTo({
+          lat:      parseFloat(btn.dataset.lat),
+          lng:      parseFloat(btn.dataset.lng),
+          altitude: parseFloat(btn.dataset.alt),
+        });
+      });
 
       // ── Toggle button ──────────────────────────────────────────────────────
       document.getElementById('theme-toggle').addEventListener('click', () => {

@@ -39,8 +39,8 @@ export async function initWorldMap(options: WorldMapOptions): Promise<WorldMapIn
 
   injectStyles();
 
-  const cleanup = await createGlobe(container, activeCountries, bigCities, smallCities, theme);
-  return { destroy: cleanup };
+  const { destroy, flyTo } = await createGlobe(container, activeCountries, bigCities, smallCities, theme);
+  return { destroy, flyTo };
 }
 
 export type { City, WorldMapOptions, WorldMapInstance } from './types';

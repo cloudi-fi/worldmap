@@ -81,7 +81,7 @@ export async function createGlobe(
   bigCities: City[],
   smallCities: City[],
   theme: Theme = 'light',
-): Promise<() => void> {
+): Promise<{ destroy: () => void; flyTo: (pov: { lat: number; lng: number; altitude?: number }, transitionMs?: number) => void }> {
   const COLORS = THEMES[theme];
   // Globe.gl defaults to window.innerWidth × window.innerHeight — override with
   // the actual container dimensions so the canvas fills the element correctly.
@@ -139,7 +139,11 @@ export async function createGlobe(
   const canvas = globe.renderer().domElement;
 
   function pauseRotation()  { controls.autoRotate = false; }
-  function resumeRotation() { controls.autoRotate = true;  }
+  function resumeRotation() {
+    controls.autoRotate = true;
+    const pov = globe.pointOfView();
+    console.log('pointOfView', pov);
+  }
 
   canvas.addEventListener('pointerdown',  pauseRotation);
   canvas.addEventListener('pointerup',    resumeRotation);
@@ -247,14 +251,36 @@ export async function createGlobe(
     runPulse();
   }, 100);
 
-  // 6. Return cleanup
-  return () => {
-    cancelAnimationFrame(pulseFrameId);
-    clearTimeout(pulseSetupId);
-    ro.disconnect();
-    canvas.removeEventListener('pointerdown',  pauseRotation);
-    canvas.removeEventListener('pointerup',    resumeRotation);
-    canvas.removeEventListener('pointerleave', resumeRotation);
-    globe._destructor();
+  // ── Continent fly-to ──────────────────────────────────────────────────────
+  // Animates the camera to the requested point-of-view, then re-enables
+  // auto-rotation after RESUME_DELAY_MS if the user doesn't interact.
+  const RESUME_DELAY_MS = 5000;
+  let resumeTimerId = 0;
+
+  function flyTo(
+    pov: { lat: number; lng: number; altitude?: number },
+    transitionMs = 1500,
+  ) {
+    clearTimeout(resumeTimerId);
+    controls.autoRotate = false;
+    globe.pointOfView(pov, transitionMs);
+    resumeTimerId = window.setTimeout(() => {
+      controls.autoRotate = true;
+    }, RESUME_DELAY_MS);
+  }
+
+  // 6. Return instance
+  return {
+    flyTo,
+    destroy: () => {
+      clearTimeout(resumeTimerId);
+      cancelAnimationFrame(pulseFrameId);
+      clearTimeout(pulseSetupId);
+      ro.disconnect();
+      canvas.removeEventListener('pointerdown',  pauseRotation);
+      canvas.removeEventListener('pointerup',    resumeRotation);
+      canvas.removeEventListener('pointerleave', resumeRotation);
+      globe._destructor();
+    },
   };
 }
