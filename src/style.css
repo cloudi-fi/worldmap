@@ -1,0 +1,25 @@
+/* ─── Globe widget tooltip ─────────────────────────────────────────────────── */
+/* Override globe.gl's default .float-tooltip-kap styles */
+.float-tooltip-kap {
+  background: #ffffff !important;
+  color: #1a2640 !important;
+  border: 1px solid #C2D0F0 !important;
+  border-radius: 8px !important;
+  box-shadow: 0 4px 16px rgba(63, 110, 210, 0.12) !important;
+  padding: 8px 12px !important;
+  font: 13px/1.4 system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif !important;
+  max-width: 220px !important;
+  pointer-events: none !important;
+}
+
+/* Inner helpers used by labelHtml() in globe.ts */
+.wm-label-title {
+  font-weight: 600;
+  color: #1a2640;
+}
+
+.wm-label-info {
+  color: #6b7fa0;
+  margin-top: 3px;
+  font-size: 12px;
+}

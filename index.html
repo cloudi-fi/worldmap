@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>WorldMap Globe – Dev Preview</title>
+    <style>
+      *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+      body {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background: #F4F7FC;
+        font-family: system-ui, sans-serif;
+      }
+
+      h1 {
+        color: #C2D0F0;
+        font-size: 14px;
+        font-weight: 500;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        margin-bottom: 24px;
+        opacity: 0.6;
+      }
+
+      /* The globe container – the globe canvas will fill this */
+      #globe {
+        width: 1200px;
+        height: 600px;
+        border-radius: 16px;
+        background: #F6F8FD;
+        overflow: hidden;
+      }
+      #globe canvas {
+        transform: scaleX(1.3);
+      }
+    </style>
+  </head>
+  <body>
+    <h1>WorldMap Globe — dev preview</h1>
+    <div id="globe"></div>
+
+    <script type="module">
+      import { initWorldMap } from '/src/main.ts';
+
+      const [bigCities, smallCities, activeCountries] = await Promise.all([
+        fetch('/data/big-cities.json').then(r => r.json()),
+        fetch('/data/small-cities.json').then(r => r.json()),
+        fetch('/data/countries.json').then(r => r.json()),
+      ]);
+
+      initWorldMap({
+        container: document.getElementById('globe'),
+        activeCountries,
+        bigCities,
+        smallCities,
+      });
+    </script>
+  </body>
+</html>

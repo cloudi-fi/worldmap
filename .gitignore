@@ -1,0 +1,8 @@
+node_modules
+dist
+/data
+/scripts
+.env
+
+# Vite source maps (large, not needed for deployment)
+docs/*.map
