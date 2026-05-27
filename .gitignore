@@ -6,3 +6,4 @@ dist
 
 # Vite source maps (large, not needed for deployment)
 docs/*.map
+.DS_Store
