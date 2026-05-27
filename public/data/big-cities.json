@@ -108,6 +108,24 @@
     "lng": -81.37739
   },
   {
+    "name": "Bal Harbour",
+    "country": "US",
+    "lat": 25.887,
+    "lng": -80.12641
+  },
+  {
+    "name": "Austin",
+    "country": "US",
+    "lat": 30.40181,
+    "lng": -97.72645
+  },
+  {
+    "name": "Boca Raton",
+    "country": "US",
+    "lat": 33.57982,
+    "lng": -84.36351
+  },
+  {
     "name": "London",
     "country": "GB",
     "lat": 51.50643,

@@ -133,7 +133,7 @@ export async function createGlobe(
   controls.dampingFactor   = 0.08;
 
   // Tilt the initial camera 20° north so the northern hemisphere is centred
-  globe.pointOfView({ lat: 30, lng: 40, altitude: 1.0 }, 0);
+  globe.pointOfView({ lat: 24, lng: 30, altitude: 1.0 }, 0);
 
   // 5. Pause auto-rotate while the user is dragging
   const canvas = globe.renderer().domElement;

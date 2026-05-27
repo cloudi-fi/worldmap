@@ -120,22 +120,34 @@
     "lng": 3.12954
   },
   {
-    "name": "Bal Harbour",
-    "country": "US",
-    "lat": 25.887,
-    "lng": -80.12641
+    "name": "Le Mans",
+    "country": "FR",
+    "lat": 48.00832,
+    "lng": 0.19745
   },
   {
-    "name": "Austin",
-    "country": "US",
-    "lat": 30.40181,
-    "lng": -97.72645
+    "name": "Le Havre",
+    "country": "FR",
+    "lat": 49.49359,
+    "lng": 0.10097
   },
   {
-    "name": "Boca Raton",
-    "country": "US",
-    "lat": 33.57982,
-    "lng": -84.36351
+    "name": "Cannes",
+    "country": "FR",
+    "lat": 43.55332,
+    "lng": 7.01363
+  },
+  {
+    "name": "Bourges",
+    "country": "FR",
+    "lat": 47.08603,
+    "lng": 2.39312
+  },
+  {
+    "name": "Metz",
+    "country": "FR",
+    "lat": 49.11472,
+    "lng": 6.17147
   },
   {
     "name": "Seattle",
@@ -540,6 +552,204 @@
     "lng": -90.19956
   },
   {
+    "name": "Livermore",
+    "country": "US",
+    "lat": 37.6757,
+    "lng": -121.75856
+  },
+  {
+    "name": "Springfield",
+    "country": "US",
+    "lat": 39.8013,
+    "lng": -89.6436
+  },
+  {
+    "name": "Huntington Station",
+    "country": "US",
+    "lat": 40.85456,
+    "lng": -73.39848
+  },
+  {
+    "name": "Albuquerque",
+    "country": "US",
+    "lat": 33.38764,
+    "lng": -104.53392
+  },
+  {
+    "name": "Williamsburg",
+    "country": "US",
+    "lat": 37.27569,
+    "lng": -76.71029
+  },
+  {
+    "name": "East Hampton",
+    "country": "US",
+    "lat": 40.96375,
+    "lng": -72.18518
+  },
+  {
+    "name": "Dawsonville",
+    "country": "US",
+    "lat": 34.35673,
+    "lng": -84.04818
+  },
+  {
+    "name": "Arlington",
+    "country": "US",
+    "lat": 38.8905,
+    "lng": -77.08629
+  },
+  {
+    "name": "Palo Alto",
+    "country": "US",
+    "lat": 37.44466,
+    "lng": -122.16079
+  },
+  {
+    "name": "West Hollywood",
+    "country": "US",
+    "lat": 34.0823,
+    "lng": -118.38706
+  },
+  {
+    "name": "Fort Lauderdale",
+    "country": "US",
+    "lat": 26.15238,
+    "lng": -80.32051
+  },
+  {
+    "name": "Pittsburgh",
+    "country": "US",
+    "lat": 40.54359,
+    "lng": -80.01794
+  },
+  {
+    "name": "Jacksonville",
+    "country": "US",
+    "lat": 31.81625,
+    "lng": -82.97886
+  },
+  {
+    "name": "St. Louis",
+    "country": "US",
+    "lat": 33.73789,
+    "lng": -82.72428
+  },
+  {
+    "name": "Shreveport",
+    "country": "US",
+    "lat": 32.51487,
+    "lng": -93.74689
+  },
+  {
+    "name": "Rochester",
+    "country": "US",
+    "lat": 43.1558,
+    "lng": -77.61632
+  },
+  {
+    "name": "Bergen",
+    "country": "US",
+    "lat": 40.95949,
+    "lng": -74.07444
+  },
+  {
+    "name": "Oak Brook",
+    "country": "US",
+    "lat": 41.83252,
+    "lng": -87.94592
+  },
+  {
+    "name": "Stamford",
+    "country": "US",
+    "lat": 41.05195,
+    "lng": -73.54222
+  },
+  {
+    "name": "East Rutherford",
+    "country": "US",
+    "lat": 40.80762,
+    "lng": -74.07058
+  },
+  {
+    "name": "Savannah",
+    "country": "US",
+    "lat": 32.08091,
+    "lng": -81.09119
+  },
+  {
+    "name": "Santa Monica",
+    "country": "US",
+    "lat": 34.01158,
+    "lng": -118.49227
+  },
+  {
+    "name": "Paramus",
+    "country": "US",
+    "lat": 40.91673,
+    "lng": -74.07376
+  },
+  {
+    "name": "Plano",
+    "country": "US",
+    "lat": 33.02079,
+    "lng": -96.69925
+  },
+  {
+    "name": "Princeton",
+    "country": "US",
+    "lat": 40.36076,
+    "lng": -74.66446
+  },
+  {
+    "name": "Louisville",
+    "country": "US",
+    "lat": 38.25489,
+    "lng": -85.76666
+  },
+  {
+    "name": "Stanton",
+    "country": "US",
+    "lat": 32.13088,
+    "lng": -101.8031
+  },
+  {
+    "name": "Oklahoma City",
+    "country": "US",
+    "lat": 35.53469,
+    "lng": -97.52114
+  },
+  {
+    "name": "Newark",
+    "country": "US",
+    "lat": 40.73185,
+    "lng": -74.12214
+  },
+  {
+    "name": "Lexington",
+    "country": "US",
+    "lat": 42.472548117079,
+    "lng": -71.248513172613
+  },
+  {
+    "name": "Long Island City",
+    "country": "US",
+    "lat": 40.75192,
+    "lng": -73.92542
+  },
+  {
+    "name": "Torrance",
+    "country": "US",
+    "lat": 33.82744,
+    "lng": -118.3333
+  },
+  {
+    "name": "Kenwood",
+    "country": "US",
+    "lat": 39.19958,
+    "lng": -84.3786
+  },
+  {
     "name": "Manchester",
     "country": "GB",
     "lat": 53.47548,
@@ -880,6 +1090,36 @@
     "country": "ES",
     "lat": 36.87365,
     "lng": -2.44619
+  },
+  {
+    "name": "Granada",
+    "country": "ES",
+    "lat": 37.21339,
+    "lng": -3.62289
+  },
+  {
+    "name": "León",
+    "country": "ES",
+    "lat": 42.61193,
+    "lng": -5.58433
+  },
+  {
+    "name": "Pamplona",
+    "country": "ES",
+    "lat": 42.81279,
+    "lng": -1.64332
+  },
+  {
+    "name": "Lleida",
+    "country": "ES",
+    "lat": 41.61495,
+    "lng": 0.62755
+  },
+  {
+    "name": "Valladolid",
+    "country": "ES",
+    "lat": 41.65419,
+    "lng": -4.73214
   },
   {
     "name": "中央区",
@@ -1252,6 +1492,66 @@
     "country": "BR",
     "lat": -27.5976,
     "lng": -48.54799
+  },
+  {
+    "name": "Feira de Santana",
+    "country": "BR",
+    "lat": -12.25552,
+    "lng": -38.95992
+  },
+  {
+    "name": "Recife",
+    "country": "BR",
+    "lat": -8.05603,
+    "lng": -34.87036
+  },
+  {
+    "name": "Catarina",
+    "country": "BR",
+    "lat": -6.12514,
+    "lng": -39.8764
+  },
+  {
+    "name": "Itapevi",
+    "country": "BR",
+    "lat": -23.54153,
+    "lng": -46.92628
+  },
+  {
+    "name": "Barueri",
+    "country": "BR",
+    "lat": -23.50412,
+    "lng": -46.8444
+  },
+  {
+    "name": "São José dos Pinhais",
+    "country": "BR",
+    "lat": -25.53756,
+    "lng": -49.26925
+  },
+  {
+    "name": "São José do Rio Preto",
+    "country": "BR",
+    "lat": -20.80988,
+    "lng": -49.38576
+  },
+  {
+    "name": "Cuiabá",
+    "country": "BR",
+    "lat": -15.59888,
+    "lng": -56.09462
+  },
+  {
+    "name": "Jutaí",
+    "country": "BR",
+    "lat": -2.74451,
+    "lng": -66.76139
+  },
+  {
+    "name": "São Bernardo do Campo",
+    "country": "BR",
+    "lat": -23.70287,
+    "lng": -46.55258
   },
   {
     "name": "Monterrey",
