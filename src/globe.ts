@@ -164,19 +164,57 @@ export async function createGlobe(
   // Begin walking after the initial dwell
   scheduleNext(TOUR_DWELL_MS);
 
-  // Pause the tour while the user drags; resume 5 s after they release
+  // Pause the tour completely while dragging.
+  // 3 s after the last drag input, snap to the nearest continent and resume.
   const canvas = globe.renderer().domElement;
+  let idleTimerId = 0;
 
-  function pauseTour()  { clearTimeout(tourTimerId); }
-  function resumeTour() {
-    const pov = globe.pointOfView();
-    console.log('pointOfView', pov);
-    scheduleNext(5000);
+  // Squared lat/lng distance (good enough for "find closest view")
+  function closestStopIndex(lat: number, lng: number): number {
+    let best = 0;
+    let bestDist = Infinity;
+    TOUR_STOPS.forEach((stop, i) => {
+      const dlat = stop.lat - lat;
+      const dlng = ((stop.lng - lng + 540) % 360) - 180; // wrap longitude
+      const dist  = dlat * dlat + dlng * dlng;
+      if (dist < bestDist) { bestDist = dist; best = i; }
+    });
+    return best;
   }
 
-  canvas.addEventListener('pointerdown',  pauseTour);
-  canvas.addEventListener('pointerup',    resumeTour);
-  canvas.addEventListener('pointerleave', resumeTour);
+  function snapAndResume() {
+    const pov = globe.pointOfView();
+    console.log('pointOfView', pov);
+    tourIndex = closestStopIndex(pov.lat, pov.lng);
+    globe.pointOfView(TOUR_STOPS[tourIndex], TOUR_TRAVEL_MS);
+    scheduleNext(TOUR_DWELL_MS + TOUR_TRAVEL_MS);
+  }
+
+  function onPointerDown() {
+    // Cancel any in-progress Globe.gl camera tween by snapping to current position.
+    // Without this, the 20 s tween overwrites OrbitControls every frame and
+    // dragging feels completely locked.
+    globe.pointOfView(globe.pointOfView(), 0);
+    clearTimeout(tourTimerId);
+    clearTimeout(idleTimerId);
+  }
+  function onPointerUp() {
+    // 3 s after the user releases, snap to the nearest continent and resume
+    clearTimeout(idleTimerId);
+    idleTimerId = window.setTimeout(snapAndResume, 3000);
+  }
+  function onWheel() {
+    // Each wheel tick cancels any running tween and resets the idle countdown
+    globe.pointOfView(globe.pointOfView(), 0);
+    clearTimeout(tourTimerId);
+    clearTimeout(idleTimerId);
+    idleTimerId = window.setTimeout(snapAndResume, 3000);
+  }
+
+  canvas.addEventListener('pointerdown',  onPointerDown);
+  canvas.addEventListener('pointerup',    onPointerUp);
+  canvas.addEventListener('pointerleave', onPointerUp);
+  canvas.addEventListener('wheel',        onWheel, { passive: true });
 
   // 6. Fetch country GeoJSON and populate layers
   const res     = await fetch(COUNTRIES_URL);
@@ -289,6 +327,7 @@ export async function createGlobe(
     transitionMs = 1500,
   ) {
     clearTimeout(tourTimerId);
+    clearTimeout(idleTimerId);
     tourIndex = continentIndex;
     globe.pointOfView(pov, transitionMs);
     // After 5 s, move on to the next stop and continue walking
@@ -304,12 +343,14 @@ export async function createGlobe(
     flyTo,
     destroy: () => {
       clearTimeout(tourTimerId);
+      clearTimeout(idleTimerId);
       cancelAnimationFrame(pulseFrameId);
       clearTimeout(pulseSetupId);
       ro.disconnect();
-      canvas.removeEventListener('pointerdown',  pauseTour);
-      canvas.removeEventListener('pointerup',    resumeTour);
-      canvas.removeEventListener('pointerleave', resumeTour);
+      canvas.removeEventListener('pointerdown',  onPointerDown);
+      canvas.removeEventListener('pointerup',    onPointerUp);
+      canvas.removeEventListener('pointerleave', onPointerUp);
+      canvas.removeEventListener('wheel',        onWheel);
       globe._destructor();
     },
   };
