@@ -6,20 +6,24 @@ import type { City } from './types';
 const COLORS = {
   bg:             '#F6F8FD',
   ocean:          '#F6F8FD',
+  countrySide:    '#F6F8FD',
   countryDefault: '#C2D0F0',
+  atmosphere:     '#C2D0F0',
   countryActive:  '#3F6ED2',
   // countrySide:    '#9AAAD8',
-  countrySide:    '#F6F8FD',
   countryStroke:  '#8898C8',
-  atmosphere:     '#C2D0F0',
-  // city:           '#fff2b3',
-  // city:           '#ffda24',
   city:           '#FFCC44',
-  // city:           '#ffe047',
-  cityPulse:      '#FFCC44',
   cityPulse:      '#ffe047',
-  // cityPulse:      '#dbb600',
 } as const;
+
+
+// Horizontal stretch factor applied to the Three.js scene.
+// Scaling the scene (not the canvas) keeps raycasting and tooltip
+// projection in the same world-space coordinate system, so hover
+// detection and tooltip placement remain accurate.
+const GLOBE_SCALE_X = 1.0;
+const GLOBE_SCALE_Y = 0.8;
+const GLOBE_SCALE_Z = 1.0;
 
 // GeoJSON with properties.ADMIN (name) and properties.ISO_A2 (code)
 const COUNTRIES_URL =
@@ -91,6 +95,13 @@ export async function createGlobe(
   // intensity = Math.PI to cancel that factor and get colour × 1 = colour.
   globe.lights([new THREE.AmbientLight(0xffffff, Math.PI)]);
 
+  // Stretch the globe elliptically by scaling the Three.js scene in X.
+  // This is safe: tooltip positions are derived from 3D→2D projection
+  // through the same camera, so they stay aligned with the stretched geometry.
+  globe.scene().scale.x = GLOBE_SCALE_X;
+  globe.scene().scale.y = GLOBE_SCALE_Y;
+  globe.scene().scale.z = GLOBE_SCALE_Z;
+
   // 3. Keep canvas sized to the container when the element is resized
   const ro = new ResizeObserver(([entry]) => {
     const { width, height } = entry.contentRect;
@@ -106,7 +117,7 @@ export async function createGlobe(
   controls.dampingFactor   = 0.08;
 
   // Tilt the initial camera 20° north so the northern hemisphere is centred
-  globe.pointOfView({ lat: 30, lng: 40, altitude: 1.5 }, 0);
+  globe.pointOfView({ lat: 30, lng: 40, altitude: 1.0 }, 0);
 
   // 5. Pause auto-rotate while the user is dragging
   const canvas = globe.renderer().domElement;
