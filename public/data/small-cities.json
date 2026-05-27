@@ -60,6 +60,66 @@
     "lng": 7.73642
   },
   {
+    "name": "Rennes",
+    "country": "FR",
+    "lat": 48.11428,
+    "lng": -1.70617
+  },
+  {
+    "name": "Rouen",
+    "country": "FR",
+    "lat": 49.45217,
+    "lng": 1.1018
+  },
+  {
+    "name": "Angers",
+    "country": "FR",
+    "lat": 47.47069,
+    "lng": -0.55325
+  },
+  {
+    "name": "CERGY",
+    "country": "FR",
+    "lat": 49.04897,
+    "lng": 2.01091
+  },
+  {
+    "name": "Nîmes",
+    "country": "FR",
+    "lat": 43.83512,
+    "lng": 4.35855
+  },
+  {
+    "name": "Tours",
+    "country": "FR",
+    "lat": 47.38846,
+    "lng": 0.68957
+  },
+  {
+    "name": "Perpignan",
+    "country": "FR",
+    "lat": 42.68006,
+    "lng": 2.89068
+  },
+  {
+    "name": "Annecy",
+    "country": "FR",
+    "lat": 45.8991,
+    "lng": 6.1287
+  },
+  {
+    "name": "Dijon",
+    "country": "FR",
+    "lat": 47.32698,
+    "lng": 5.04299
+  },
+  {
+    "name": "Clermont-Ferrand",
+    "country": "FR",
+    "lat": 45.78326,
+    "lng": 3.12954
+  },
+  {
     "name": "Bal Harbour",
     "country": "US",
     "lat": 25.887,
@@ -790,6 +850,36 @@
     "country": "ES",
     "lat": 43.36845,
     "lng": -8.4021
+  },
+  {
+    "name": "Toledo",
+    "country": "ES",
+    "lat": 39.87553,
+    "lng": -3.93894
+  },
+  {
+    "name": "Ibiza",
+    "country": "ES",
+    "lat": 38.9139,
+    "lng": 1.44312
+  },
+  {
+    "name": "Vigo",
+    "country": "ES",
+    "lat": 37.8851,
+    "lng": -4.78092
+  },
+  {
+    "name": "Córdoba",
+    "country": "ES",
+    "lat": 37.88463,
+    "lng": -4.7813
+  },
+  {
+    "name": "Almería",
+    "country": "ES",
+    "lat": 36.87365,
+    "lng": -2.44619
   },
   {
     "name": "中央区",

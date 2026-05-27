@@ -12,7 +12,13 @@ const COLORS = {
   countrySide:    '#F6F8FD',
   countryStroke:  '#8898C8',
   atmosphere:     '#C2D0F0',
-  city:           '#FFD338',
+  // city:           '#fff2b3',
+  // city:           '#ffda24',
+  city:           '#FFCC44',
+  // city:           '#ffe047',
+  cityPulse:      '#FFCC44',
+  cityPulse:      '#ffe047',
+  // cityPulse:      '#dbb600',
 } as const;
 
 // GeoJSON with properties.ADMIN (name) and properties.ISO_A2 (code)
@@ -142,22 +148,82 @@ export async function createGlobe(
     .pointColor(() => COLORS.city)
     .pointRadius((d: any) => (d as CityPoint)._size === 'big' ? 0.7 : 0.2)
     .pointAltitude(0.015)
-    .pointLabel((d: any)  => labelHtml((d as CityPoint).name, (d as CityPoint).info))
+    .pointsTransitionDuration(0)
+    .pointLabel((d: any)  => labelHtml((d as CityPoint).name, (d as CityPoint).info));
 
-    // ── Pulse rings (real-time activity feel) ─────────────────────────────
-    .ringsData(allPoints)
-    .ringLat((d: any)    => (d as CityPoint).lat)
-    .ringLng((d: any)    => (d as CityPoint).lng)
-    // Return a t→color function per ring; t goes from 0 (new) to 1 (gone)
-    .ringColor((_d: any): ((t: number) => string) =>
-      (t: number) => `rgba(255,211,56,${Math.max(0, 1 - t * 1.8).toFixed(3)})`,
-    )
-    .ringMaxRadius((d: any)  => (d as CityPoint)._size === 'big' ? 4 : 2.5)
-    .ringPropagationSpeed(2)
-    .ringRepeatPeriod(1500);
+  // ── Dot pulse animation ───────────────────────────────────────────────────
+  // Each dot suddenly jumps to 1.5× size + #FFCC44, then eases back to its
+  // resting size + #fff2b3. ThreeGlobe stores the Three.js mesh on the datum
+  // via __threeObjPoint, so we animate scale and material.color directly.
+  const PULSE_COLOR_OBJ = new THREE.Color(COLORS.cityPulse);
+  const REST_COLOR_OBJ  = new THREE.Color(COLORS.city);
+  const PULSE_DURATION  = 1000; // ms for the return-to-rest animation
+  const PULSE_SCALE     = 1.0;  // lateral (x/y) scale factor
+  const PULSE_SCALE_Z   = 1.1;  // altitude (z) scale factor — lifts dot up when pulsing
+
+  // pxPerDeg mirrors ThreeGlobe's internal formula (GLOBE_RADIUS = 100)
+  const PX_PER_DEG = 2 * Math.PI * 100 / 360;
+
+  let pulseFrameId = 0;
+  const pulseSetupId = setTimeout(() => {
+    // ThreeGlobe populates __threeObjPoint synchronously when pointsData() is
+    // called. We clone each material so animating one dot doesn't affect others
+    // that share the same MeshLambertMaterial instance.
+    allPoints.forEach((city) => {
+      const mesh = (city as any).__threeObjPoint as THREE.Mesh | undefined;
+      if (!mesh) return;
+      mesh.material = (mesh.material as THREE.Material).clone();
+      // Compute base scale from the known pointRadius values rather than
+      // reading mesh.scale (which may be mid-transition and wrong).
+      const r = (city as CityPoint)._size === 'big' ? 0.7 : 0.2;
+      (city as any)._baseScale  = r * PX_PER_DEG;
+      (city as any)._baseScaleZ = mesh.scale.z; // altitude: set immediately since transitionDuration=0
+      (city as any)._pulsing   = false;
+      (city as any)._animStart = 0;
+      // Stagger first pulse randomly across the first 5 s
+      (city as any)._nextPulse = Date.now() + Math.random() * 10000;
+    });
+
+    function runPulse() {
+      const now = Date.now();
+      allPoints.forEach((city) => {
+        const mesh = (city as any).__threeObjPoint as THREE.Mesh | undefined;
+        if (!mesh) return;
+        const mat        = mesh.material as THREE.MeshLambertMaterial;
+        const baseScale  = (city as any)._baseScale  as number;
+        const baseScaleZ = (city as any)._baseScaleZ as number;
+
+        if ((city as any)._pulsing) {
+          const t     = Math.min((now - (city as any)._animStart) / PULSE_DURATION, 1);
+          const eased = t * (2 - t); // ease-out quadratic: fast start, slow finish
+          const s     = PULSE_SCALE - (PULSE_SCALE - 1) * eased;
+          mesh.scale.x = baseScale * s;
+          mesh.scale.y = baseScale * s;
+          mesh.scale.z = baseScaleZ * (PULSE_SCALE_Z - (PULSE_SCALE_Z - 1) * eased);
+          mat.color.lerpColors(PULSE_COLOR_OBJ, REST_COLOR_OBJ, eased);
+          if (t >= 1) {
+            (city as any)._pulsing   = false;
+            (city as any)._nextPulse = now + 4000 + Math.random() * 5000;
+          }
+        } else if (now >= (city as any)._nextPulse) {
+          // Fire: instant jump to peak, then animate back
+          (city as any)._pulsing   = true;
+          (city as any)._animStart = now;
+          mesh.scale.x = baseScale * PULSE_SCALE;
+          mesh.scale.y = baseScale * PULSE_SCALE;
+          mesh.scale.z = baseScaleZ * PULSE_SCALE_Z;
+          mat.color.copy(PULSE_COLOR_OBJ);
+        }
+      });
+      pulseFrameId = requestAnimationFrame(runPulse);
+    }
+    runPulse();
+  }, 100);
 
   // 6. Return cleanup
   return () => {
+    cancelAnimationFrame(pulseFrameId);
+    clearTimeout(pulseSetupId);
     ro.disconnect();
     canvas.removeEventListener('pointerdown',  pauseRotation);
     canvas.removeEventListener('pointerup',    resumeRotation);
