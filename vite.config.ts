@@ -10,7 +10,7 @@ export default defineConfig({
       fileName: (format) => `worldmap.${format}.js`,
     },
     outDir: 'docs',
-    emptyOutDir: true,
+    emptyOutDir: false,
     sourcemap: false,
   },
 })
