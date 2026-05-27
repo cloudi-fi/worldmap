@@ -82,12 +82,12 @@
       <button id="theme-toggle" type="button">Dark</button>
     </div>
     <nav class="continents">
-      <button data-lat="29.727"  data-lng="4.840"    data-alt="0.897">Europe</button>
-      <button data-lat="20.898"  data-lng="-106.276" data-alt="1.166">North America</button>
-      <button data-lat="-33.929" data-lng="-68.950"  data-alt="1.357">South America</button>
-      <button data-lat="-17.046" data-lng="17.292"   data-alt="1.254">Africa</button>
-      <button data-lat="-31.561" data-lng="140.528"  data-alt="1.094">Oceania</button>
-      <button data-lat="11.562"  data-lng="94.406"   data-alt="1.038">Asia</button>
+      <button data-lat="29.727"  data-lng="4.840"    data-alt="0.897" data-index="0">Europe</button>
+      <button data-lat="20.898"  data-lng="-106.276" data-alt="1.166" data-index="1">North America</button>
+      <button data-lat="-33.929" data-lng="-68.950"  data-alt="1.357" data-index="2">South America</button>
+      <button data-lat="-17.046" data-lng="17.292"   data-alt="1.254" data-index="3">Africa</button>
+      <button data-lat="-31.561" data-lng="140.528"  data-alt="1.094" data-index="4">Oceania</button>
+      <button data-lat="11.562"  data-lng="94.406"   data-alt="1.038" data-index="5">Asia</button>
     </nav>
     <div id="globe"></div>
 
@@ -130,7 +130,7 @@
           lat:      parseFloat(btn.dataset.lat),
           lng:      parseFloat(btn.dataset.lng),
           altitude: parseFloat(btn.dataset.alt),
-        });
+        }, parseInt(btn.dataset.index, 10));
       });
 
       document.getElementById('theme-toggle').addEventListener('click', () => {

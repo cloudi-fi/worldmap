@@ -31,6 +31,20 @@ const THEMES = {
 
 type Theme = keyof typeof THEMES;
 
+// ─── Continent tour stops ───────────────────────────────────────────────────
+// Camera walks through these in order, looping continuously.
+// Index must match the data-index attributes on the HTML continent buttons.
+const TOUR_STOPS = [
+  { lat:  29.727, lng:   4.840, altitude: 0.897 }, // 0 Europe
+  { lat:  20.898, lng: -106.276, altitude: 1.166 }, // 1 N. America
+  { lat: -33.929, lng:  -68.950, altitude: 1.357 }, // 2 S. America
+  { lat: -17.046, lng:   17.292, altitude: 1.254 }, // 3 Africa
+  { lat: -31.561, lng:  140.528, altitude: 1.094 }, // 4 Oceania
+  { lat:  11.562, lng:   94.406, altitude: 1.038 }, // 5 Asia
+] as const;
+const TOUR_TRAVEL_MS = 20000; // camera transition between stops
+const TOUR_DWELL_MS  = 200; // pause at each stop before moving on
+
 // Horizontal stretch factor applied to the Three.js scene.
 // Scaling the scene (not the canvas) keeps raycasting and tooltip
 // projection in the same world-space coordinate system, so hover
@@ -81,7 +95,7 @@ export async function createGlobe(
   bigCities: City[],
   smallCities: City[],
   theme: Theme = 'light',
-): Promise<{ destroy: () => void; flyTo: (pov: { lat: number; lng: number; altitude?: number }, transitionMs?: number) => void }> {
+): Promise<{ destroy: () => void; flyTo: (pov: { lat: number; lng: number; altitude?: number }, continentIndex: number, transitionMs?: number) => void }> {
   const COLORS = THEMES[theme];
   // Globe.gl defaults to window.innerWidth × window.innerHeight — override with
   // the actual container dimensions so the canvas fills the element correctly.
@@ -127,27 +141,42 @@ export async function createGlobe(
 
   // 4. Configure OrbitControls (available immediately)
   const controls = globe.controls();
-  controls.autoRotate      = true;
-  controls.autoRotateSpeed = 0.4;
-  controls.enableDamping   = true;
-  controls.dampingFactor   = 0.08;
+  controls.autoRotate    = false; // tour drives the camera instead of auto-rotate
+  controls.enableDamping = true;
+  controls.dampingFactor = 0.08;
 
-  // Tilt the initial camera 20° north so the northern hemisphere is centred
-  globe.pointOfView({ lat: 24, lng: 30, altitude: 1.0 }, 0);
+  // Start the tour at Europe (index 0)
+  globe.pointOfView(TOUR_STOPS[0], 0);
 
-  // 5. Pause auto-rotate while the user is dragging
-  const canvas = globe.renderer().domElement;
+  // ── Tour scheduler ────────────────────────────────────────────────────────
+  let tourIndex   = 0;
+  let tourTimerId = 0;
 
-  function pauseRotation()  { controls.autoRotate = false; }
-  function resumeRotation() {
-    controls.autoRotate = true;
-    const pov = globe.pointOfView();
-    console.log('pointOfView', pov);
+  function scheduleNext(delayMs: number) {
+    clearTimeout(tourTimerId);
+    tourTimerId = window.setTimeout(() => {
+      tourIndex = (tourIndex + 1) % TOUR_STOPS.length;
+      globe.pointOfView(TOUR_STOPS[tourIndex], TOUR_TRAVEL_MS);
+      scheduleNext(TOUR_DWELL_MS + TOUR_TRAVEL_MS);
+    }, delayMs);
   }
 
-  canvas.addEventListener('pointerdown',  pauseRotation);
-  canvas.addEventListener('pointerup',    resumeRotation);
-  canvas.addEventListener('pointerleave', resumeRotation);
+  // Begin walking after the initial dwell
+  scheduleNext(TOUR_DWELL_MS);
+
+  // Pause the tour while the user drags; resume 5 s after they release
+  const canvas = globe.renderer().domElement;
+
+  function pauseTour()  { clearTimeout(tourTimerId); }
+  function resumeTour() {
+    const pov = globe.pointOfView();
+    console.log('pointOfView', pov);
+    scheduleNext(5000);
+  }
+
+  canvas.addEventListener('pointerdown',  pauseTour);
+  canvas.addEventListener('pointerup',    resumeTour);
+  canvas.addEventListener('pointerleave', resumeTour);
 
   // 6. Fetch country GeoJSON and populate layers
   const res     = await fetch(COUNTRIES_URL);
@@ -252,34 +281,35 @@ export async function createGlobe(
   }, 100);
 
   // ── Continent fly-to ──────────────────────────────────────────────────────
-  // Animates the camera to the requested point-of-view, then re-enables
-  // auto-rotation after RESUME_DELAY_MS if the user doesn't interact.
-  const RESUME_DELAY_MS = 5000;
-  let resumeTimerId = 0;
-
+  // Jumps directly to the chosen continent then resumes the tour from the
+  // next stop in sequence after 5 s.
   function flyTo(
     pov: { lat: number; lng: number; altitude?: number },
+    continentIndex: number,
     transitionMs = 1500,
   ) {
-    clearTimeout(resumeTimerId);
-    controls.autoRotate = false;
+    clearTimeout(tourTimerId);
+    tourIndex = continentIndex;
     globe.pointOfView(pov, transitionMs);
-    resumeTimerId = window.setTimeout(() => {
-      controls.autoRotate = true;
-    }, RESUME_DELAY_MS);
+    // After 5 s, move on to the next stop and continue walking
+    tourTimerId = window.setTimeout(() => {
+      tourIndex = (tourIndex + 1) % TOUR_STOPS.length;
+      globe.pointOfView(TOUR_STOPS[tourIndex], TOUR_TRAVEL_MS);
+      scheduleNext(TOUR_DWELL_MS + TOUR_TRAVEL_MS);
+    }, 5000);
   }
 
   // 6. Return instance
   return {
     flyTo,
     destroy: () => {
-      clearTimeout(resumeTimerId);
+      clearTimeout(tourTimerId);
       cancelAnimationFrame(pulseFrameId);
       clearTimeout(pulseSetupId);
       ro.disconnect();
-      canvas.removeEventListener('pointerdown',  pauseRotation);
-      canvas.removeEventListener('pointerup',    resumeRotation);
-      canvas.removeEventListener('pointerleave', resumeRotation);
+      canvas.removeEventListener('pointerdown',  pauseTour);
+      canvas.removeEventListener('pointerup',    resumeTour);
+      canvas.removeEventListener('pointerleave', resumeTour);
       globe._destructor();
     },
   };

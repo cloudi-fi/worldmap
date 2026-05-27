@@ -22,6 +22,6 @@ export interface WorldMapOptions {
 
 export interface WorldMapInstance {
   destroy(): void;
-  /** Smoothly fly the camera to a point-of-view. Auto-rotation resumes 5 s after the call. */
-  flyTo(pov: { lat: number; lng: number; altitude?: number }, transitionMs?: number): void;
+  /** Smoothly fly the camera to a continent stop. Auto-tour resumes from the next stop after 5 s. */
+  flyTo(pov: { lat: number; lng: number; altitude?: number }, continentIndex: number, transitionMs?: number): void;
 }
