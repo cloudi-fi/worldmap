@@ -15,6 +15,9 @@ export interface WorldMapOptions {
   bigCities?: City[];
   /** Cities rendered with a small dot (radius 0.25) and a tighter pulse ring. */
   smallCities?: City[];
+  /** Color theme. Defaults to 'light'. Pass 'dark' or omit to follow the
+   *  system preference via matchMedia in your own wrapper code. */
+  theme?: 'light' | 'dark';
 }
 
 export interface WorldMapInstance {

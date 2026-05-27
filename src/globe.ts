@@ -3,19 +3,33 @@ import * as THREE from 'three';
 import type { City } from './types';
 
 // ─── Design tokens ───────────────────────────────────────────────────────────
-const COLORS = {
-  bg:             '#F6F8FD',
-  ocean:          '#F6F8FD',
-  countrySide:    '#F6F8FD',
-  countryDefault: '#C2D0F0',
-  atmosphere:     '#C2D0F0',
-  countryActive:  '#3F6ED2',
-  // countrySide:    '#9AAAD8',
-  countryStroke:  '#8898C8',
-  city:           '#FFCC44',
-  cityPulse:      '#ffe047',
+const THEMES = {
+  light: {
+    bg:             '#F6F8FD',
+    ocean:          '#F6F8FD',
+    countrySide:    '#F6F8FD',
+    countryDefault: '#C2D0F0',
+    atmosphere:     '#C2D0F0',
+    countryActive:  '#3F6ED2',
+    countryStroke:  '#8898C8',
+    city:           '#FFCC44',
+    cityPulse:      '#ffe047',
+  },
+  dark: {
+    bg:             '#162a63',
+    ocean:          '#162a63',
+    countrySide:    '#162a63',
+    countryDefault: '#1d3884',
+    atmosphere:     '#466cd6',
+    // countryActive:  '#2546a6',
+    countryActive:  '#466cd6',
+    countryStroke:  '#162a63',
+    city:           '#FFCC44',
+    cityPulse:      '#ffe047',
+  },
 } as const;
 
+type Theme = keyof typeof THEMES;
 
 // Horizontal stretch factor applied to the Three.js scene.
 // Scaling the scene (not the canvas) keeps raycasting and tooltip
@@ -66,7 +80,9 @@ export async function createGlobe(
   activeCountries: string[],
   bigCities: City[],
   smallCities: City[],
+  theme: Theme = 'light',
 ): Promise<() => void> {
+  const COLORS = THEMES[theme];
   // Globe.gl defaults to window.innerWidth × window.innerHeight — override with
   // the actual container dimensions so the canvas fills the element correctly.
   const w = container.clientWidth  || 1200;

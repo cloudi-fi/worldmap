@@ -34,11 +34,12 @@ export async function initWorldMap(options: WorldMapOptions): Promise<WorldMapIn
     activeCountries = [],
     bigCities       = [],
     smallCities     = [],
+    theme           = 'light',
   } = options;
 
   injectStyles();
 
-  const cleanup = await createGlobe(container, activeCountries, bigCities, smallCities);
+  const cleanup = await createGlobe(container, activeCountries, bigCities, smallCities, theme);
   return { destroy: cleanup };
 }
 
